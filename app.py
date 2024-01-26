@@ -1,11 +1,9 @@
 from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User 
-
+import os
 
 app = Flask(__name__)
-
-import os
 
 # TODO: Replace these hard-coded variables for security
 os.environ['DB_USERNAME'] = 'N'
