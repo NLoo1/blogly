@@ -1,4 +1,4 @@
-from sqlalchemy import SQLAlchemy 
+from flask_sqlalchemy import SQLAlchemy 
 
 db = SQLAlchemy()
 
@@ -14,3 +14,9 @@ class User(db.Model):
     first_name = db.Column(db.String, nullable=False)
     last_name = db.Column(db.String, nullable=False)
     image_url = db.Column(db.String, nullable=True, default='')
+
+    @classmethod
+    def __repr__(self):
+        return f"<User id:{self.id} {self.first_name} {self.last_name}>"
+    
+    

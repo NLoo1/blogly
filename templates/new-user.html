@@ -1,0 +1,19 @@
+{% extends 'home.html' %}
+
+{% block new %}
+    <div class="container">
+        <form action="/users/new" method="POST">
+            <label for="inputFirst">First name
+                <input type="text" name="first_name" id="inputFirst" required>
+            </label>
+            <label for="inputLast">Last name
+                <input type="text" name="last_name" id="inputLast" required>
+            </label>
+            <label for="inputURL">Image URL
+                <input type="text" name="image_url" id="inputURL">
+            </label>
+    
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+{% endblock %}

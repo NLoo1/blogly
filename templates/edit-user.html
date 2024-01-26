@@ -1,0 +1,29 @@
+{% extends 'user.html' %}
+
+{% block edit %}
+    <div class="container">
+        <form action="/users/{{user.id}}/edit" method="post">
+            <label for="inputFirst">New first name
+                <input type="text" name="newFirst" id="inputFirst" required>
+            </label>
+            <label for="inputLast">
+                <input type="text" name="newLast" id="inputLast" required>
+            </label>
+            <label for="inputURL">
+                <input type="text" name="newImg" id="inputURL">
+            </label>
+    
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    
+
+    <div class="container">
+        <form action="/users/{{user.id}}/delete" method="post">
+            <input type="submit" value="Delete user?">
+        </form>
+    </div>
+    
+
+{% endblock %}
+

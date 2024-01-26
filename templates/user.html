@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %} {{user.first_name}} {{user.last_name}} {% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <h1>User {{user.id}}</h1>
+        <ul>
+            <li>First name: {{user.first_name}}</li>
+            <li>Last name: {{user.last_name}}</li>
+        </ul>
+        <img src="{{user.image_url}}" alt="{{user.first_name}}'s picture">
+    </div>
+
+    {% block edit %} {% endblock %}
+
+{% endblock %}
