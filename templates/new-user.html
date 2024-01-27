@@ -1,19 +1,31 @@
-{% extends 'home.html' %}
+{% extends 'base.html' %}
 
-{% block new %}
-    <div class="container">
+{% block content %}
+    <div class="container bg-light">
+        <h1>Create new user</h1>
+        <hr>
         <form action="/users/new" method="POST">
-            <label for="inputFirst">First name
+            <label for="inputFirst" class="d-block">First name
                 <input type="text" name="first_name" id="inputFirst" required>
             </label>
-            <label for="inputLast">Last name
+            <label for="inputLast" class="d-block">Last name
                 <input type="text" name="last_name" id="inputLast" required>
             </label>
-            <label for="inputURL">Image URL
+            <label for="inputURL" class="d-block">Image URL
                 <input type="text" name="image_url" id="inputURL">
             </label>
     
-            <input type="submit" value="Submit">
+            <input type="submit" value="Submit" class="btn btn-primary mb-3">
         </form>
+        <button type="button" class="btn btn-primary mb-3" id="btnBack">Back</button>
     </div>
+
+    <script>
+        btnBack = document.querySelector("#btnBack")
+        function back(){
+            window.location.href = "/"
+        }
+
+        btnBack.addEventListener('click', back)
+    </script>
 {% endblock %}

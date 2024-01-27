@@ -4,15 +4,50 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="container bg-light pb-3">
         <h1>User {{user.id}}</h1>
-        <ul>
-            <li>First name: {{user.first_name}}</li>
-            <li>Last name: {{user.last_name}}</li>
+        <hr>
+        <img src="{{user.image_url}}" alt="{{user.first_name}}'s picture" class="rounded mb-3">
+        <ul class="list-group mb-3">
+            <li class="list-group-item"><b>First name:</b> {{user.first_name}}</li>
+            <li class="list-group-item"><b>Last name:</b> {{user.last_name}}</li>
+            <li class="list-group-item"><b>Posts:</b>
+                <ul class="list-group">
+                    {% for post in posts %}
+                    <li class="list-group-item"><a href="/posts/{{post.id}}">{{post.title}}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
         </ul>
-        <img src="{{user.image_url}}" alt="{{user.first_name}}'s picture">
+    
+    <button type="button" class="btn btn-link" id="btnAddPost">Add post</button>
+    <button type="button" class="btn btn-link" id="btnEditUser">Edit user</button>
+    <button type="button" class="btn btn-link" id="btnBack">Back</button>
     </div>
 
-    {% block edit %} {% endblock %}
+    <script>
+        btnEdit = document.querySelector("#btnEditUser")
+        btnBack = document.querySelector("#btnBack")
+        btnAddPost = document.querySelector("#btnAddPost")
+
+        function edit() {
+            window.location.href = "/users/{{user.id}}/edit";
+        }
+        
+        btnEdit.addEventListener('click', edit)
+
+        function back(){
+            window.location.href = "/"
+        }
+
+        btnBack.addEventListener('click', back)
+
+        function addPost(){
+            window.location.href="/users/{{user.id}}/posts/new"
+        }
+
+        btnAddPost.addEventListener('click', addPost)
+
+    </script>
 
 {% endblock %}

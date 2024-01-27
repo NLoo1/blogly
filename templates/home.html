@@ -4,12 +4,27 @@
 
 {% block content %}
 
-    <div class="container">
-        <ul><h1>Users</h1>
+    <div class="container bg-light mt-3 p-3">
+        <ul><h1 class="text-primary">Users</h1>
+            <hr>
             {% for user in users %}
-                <li>{{user.first_name}} {{user.last_name}}</li>
+                <li><a href="/users/{{user.id}}">[{{user.id}}] </a>{{user.first_name}} {{user.last_name}}</li>
             {% endfor %}
             </ul>
+        <div class="container">
+            <button class="btn btn-primary" id="btnAddUser">Add new user</button>
+        </div>
     </div>
+
+    <script>
+        btnAddUser = document.querySelector('#btnAddUser')
+
+        function addUser(){
+            window.location.href = '/users/new'
+        }
+
+        btnAddUser.addEventListener('click', addUser)
+
+    </script>
     {% block new %} {% endblock %}
 {% endblock %}

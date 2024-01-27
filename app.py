@@ -1,6 +1,7 @@
+from datetime import datetime
 from flask import Flask, request, render_template, redirect, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User 
+from models import Post, db, connect_db, User 
 import os
 
 app = Flask(__name__)
@@ -50,7 +51,8 @@ def create_user():
 @app.route ('/users/<user_id>')
 def get_user(user_id):
     user = User.query.get_or_404(user_id)
-    return render_template("user.html", user=user)
+    posts = Post.query.filter_by(created_by=user_id).all()
+    return render_template("user.html", user=user, posts=posts)
 
 @app.route ('/users/<user_id>/edit')
 def edit_user(user_id):
@@ -80,8 +82,61 @@ def update_user(user_id):
 
 @app.route ('/users/<user_id>/delete', methods=['POST'])
 def delete_user(user_id):
+    Post.query.filter_by(created_by=user_id).delete()
     User.query.filter_by(id=user_id).delete()
     db.session.commit()
     flash('User deleted.')
     return redirect('/')
 
+@app.route('/users/<user_id>/posts/new')
+def show_post_form(user_id):
+    user = User.query.get(user_id)
+    return render_template('new-post.html',user=user)
+
+
+@app.route('/users/<user_id>/posts/new', methods=['POST'])
+def add_post(user_id):
+    title = request.form['title']
+    content = request.form['content']
+    time = datetime.now()
+    new_post = Post(title=title,content=content,created_at=time,created_by=user_id)
+    db.session.add(new_post)
+    db.session.commit()
+    return redirect(f"/users/{user_id}")
+
+@app.route('/posts/<post_id>')
+def get_post(post_id):
+    post = Post.query.get(post_id)
+    author = db.session.query(User).filter(User.id == post.created_by).all()
+    return render_template('post.html', post=post, author=author)
+
+@app.route('/posts/<post_id>/edit')
+def edit_form_for_post(post_id):
+    post = Post.query.get(post_id)
+    return render_template('edit-post.html', post=post)
+
+@app.route('/posts/<post_id>/edit', methods=['POST'])
+def edit_post(post_id):
+    existing_post = Post.query.get(post_id)
+
+    if not existing_post:
+        flash('Post does not exist')
+        return redirect('/')  # Redirect to an error page or handle appropriately
+
+    title = request.form['newTitle']
+    content = request.form['newContent']
+
+    # Update the existing user's properties
+    existing_post.title = title
+    existing_post.content = content
+
+    db.session.commit()
+
+    return redirect(f'/posts/{post_id}')
+
+@app.route('/posts/<post_id>/delete', methods=['POST'])
+def delete_post(post_id):
+    Post.query.filter_by(id=post_id).delete()
+    db.session.commit()
+    flash('Post deleted.')
+    return redirect('/')

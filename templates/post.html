@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %} {{post.title}} {% endblock %}
+
+{% block content %}
+
+    <div class="container bg-light">
+        <h1>{{post.title}}</h1>
+        <hr>
+        <p>{{post.content}}</p>
+        <p>by <a href="/users/{{author[0].id}}">{{author[0].first_name}}</a></p>
+
+
+        <button type="button" class="btn btn-link" id="btnEditPost">Edit</button>
+        <button type="button" class="btn btn-link" id="btnBack">Back</button>
+    </div>
+    
+
+    <script>
+        btnEditPost = document.querySelector("#btnEditPost")
+        btnBack = document.querySelector("#btnBack")
+
+        function edit() {
+            window.location.href = "/posts/{{post.id}}/edit";
+        }
+        
+        btnEditPost.addEventListener('click', edit)
+
+        function back(){
+            window.location.href = "/"
+        }
+
+        btnBack.addEventListener('click', back)
+    </script>
+{% endblock %}

@@ -1,29 +1,46 @@
-{% extends 'user.html' %}
+{% extends 'base.html' %}
 
-{% block edit %}
-    <div class="container">
+{% block content %}
+
+    <div class="container bg-light pb-3">
+        <h1>User {{user.id}}</h1>
+        <hr>
+        <img src="{{user.image_url}}" alt="{{user.first_name}}'s picture" class="rounded mb-3">
+        <ul class="list-group mb-3">
+            <li class="list-group-item"><b>First name:</b> {{user.first_name}}</li>
+            <li class="list-group-item"><b>Last name:</b> {{user.last_name}}</li>
+        </ul>
+    </div>
+
+    <div class="container bg-light">
         <form action="/users/{{user.id}}/edit" method="post">
-            <label for="inputFirst">New first name
+            <label for="inputFirst" class="d-block">New first name
                 <input type="text" name="newFirst" id="inputFirst" required>
             </label>
-            <label for="inputLast">
+            <label for="inputLast" class="d-block">New last name
                 <input type="text" name="newLast" id="inputLast" required>
             </label>
-            <label for="inputURL">
+            <label for="inputURL" class="d-block">New image URL
                 <input type="text" name="newImg" id="inputURL">
             </label>
     
-            <input type="submit" value="Submit">
+            <input type="submit" value="Submit" class="btn btn-primary mb-3">
         </form>
-    </div>
-    
-
-    <div class="container">
         <form action="/users/{{user.id}}/delete" method="post">
-            <input type="submit" value="Delete user?">
+            <input type="submit" value="Delete user?" class="btn btn-danger mb-3">
         </form>
+        <button type="button" class="btn btn-primary mb-3" id="btnBack">Back</button>
+
     </div>
-    
+
+    <script>
+        btnBack = document.querySelector("#btnBack")
+        function back(){
+            window.location.href = "/"
+        }
+
+        btnBack.addEventListener('click', back)
+    </script>
 
 {% endblock %}
 

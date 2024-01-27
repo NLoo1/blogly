@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}New post{% endblock %}
+
+{% block content %}
+    <div class="container bg-light">
+        <h1>New post for {{user.first_name}} {{user.last_name}}</h1>
+        <hr>
+        <form action="/users/{{user.id}}/posts/new" method="post" required>
+            <label for="inputTitle" class="d-block">Title
+                <input type="text" name="title" id="inputTitle">
+            </label>
+            <label for="inputContent" class="d-block">Content
+                <input type="text" name="content" id="inputContent" required>
+            </label>
+            <input type="submit" value="Submit" class="btn btn-primary mb-3">
+            <button type="button" class="btn btn-primary mb-3" id="btnCancel">Cancel</button>
+        </form>
+    </div>
+
+    <script>
+        btnCancel = document.querySelector('#btnCancel')
+        
+        function cancel(){
+            window.location.href = "/users/{{user.id}}"
+        }
+
+        btnCancel.addEventListener('click', cancel)
+    </script>
+{% endblock %}

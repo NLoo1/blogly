@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit post{% endblock %}
+
+{% block content %}
+    <div class="container bg-light">
+        <h1>Edit post</h1>
+        <hr>
+        <form action="/posts/{{post.id}}/edit" method="post" >
+            <label for="inputTitle" class="d-block">Title
+                <input type="text" name="newTitle" id="inputTitle" required value="{{post.title}}">
+            </label>
+            <label for="inputContent" class="d-block">Content
+                <input type="text" name="newContent" id="inputContent" required value="{{post.content}}"> 
+            </label>
+            <input type="submit" value="Submit" class="btn btn-primary mb-3">
+            <button type="button" class="btn btn-primary mb-3" id="btnCancel">Cancel</button>
+        </form>
+
+        <form action="/posts/{{post.id}}/delete" method="post">
+            <input type="submit" value="Delete" class="btn btn-danger mb-3">
+        </form>
+    </div>
+
+    <script>
+        btnCancel = document.querySelector('#btnCancel')
+        
+        function cancel(){
+            window.location.href = "/"
+        }
+
+        btnCancel.addEventListener('click', cancel)
+    </script>
+{% endblock %}

@@ -16,6 +16,8 @@ class User(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     image_url = db.Column(db.Text, nullable=True, default='')
 
+    posts = db.relationship('Post', backref='user', cascade='all, delete-orphan')
+
     @classmethod
     def __repr__(self):
         return f"<User id:{self.id} {self.first_name} {self.last_name}>"
@@ -28,9 +30,9 @@ class Post(db.Model):
     title = db.Column(db.String(50), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
-    created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
 
-    user = db.relationship('User', backref='posts')
+    # user = db.relationship('User', backref='posts', cascade='all')
 
     @classmethod
     def __repr__(self):
