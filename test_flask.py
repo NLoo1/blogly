@@ -40,6 +40,3 @@ class UserViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn('John Doe', html)
-
-    def test_show_user(self):
-        with app.test_client() as client:
