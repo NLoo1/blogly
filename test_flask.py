@@ -17,26 +17,34 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.environ['DB_USERNAME'
 
 db = SQLAlchemy()
 
-db.drop_all()
-db.create_all()
+with app.app_context():
+
+    db.drop_all()
+    db.create_all()
 
 
 class UserViewsTestCase(TestCase):
 
     def setUp(self):
-        User.query.delete()
-        user = User(first_name="John", last_name="Doe")
-        db.session.add(user)
-        db.session.commit()
-        self.id= user.id
+        with app.app_context():
+
+            User.query.delete()
+            user = User(first_name="John", last_name="Doe")
+            db.session.add(user)
+            db.session.commit()
+            self.id= user.id
 
     def tearDown(self):
-        db.session.rollback()
+        with app.app_context():
+
+            db.session.rollback()
 
     def test_list_users(self):
-        with app.test_client() as client:
-            resp = client.get("/")
-            html = resp.get_data(as_text=True)
+        with app.app_context():
 
-            self.assertEqual(resp.status_code, 200)
-            self.assertIn('John Doe', html)
+            with app.test_client() as client:
+                resp = client.get("/")
+                html = resp.get_data(as_text=True)
+
+                self.assertEqual(resp.status_code, 200)
+                self.assertIn('John Doe', html)
