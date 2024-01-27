@@ -57,14 +57,23 @@ def edit_user(user_id):
     user = User.query.get_or_404(user_id)
     return render_template('edit-user.html', user=user)
 
-@app.route ('/users/<user_id>/edit', methods=['POST'])
+@app.route('/users/<user_id>/edit', methods=['POST'])
 def update_user(user_id):
-    new_first = request.form['first_name']
-    new_last = request.form['last_name']
-    new_image = request.form['image_url']
+    existing_user = User.query.get(user_id)
 
-    new_user = User(first_name=new_first,last_name=new_last,image_url=new_image)
-    db.session.add(new_user)
+    if not existing_user:
+        flash('User does not exist')
+        return redirect('/')  # Redirect to an error page or handle appropriately
+
+    new_first = request.form['newFirst']
+    new_last = request.form['newLast']
+    new_image = request.form['newImg']
+
+    # Update the existing user's properties
+    existing_user.first_name = new_first
+    existing_user.last_name = new_last
+    existing_user.image_url = new_image
+
     db.session.commit()
 
     return redirect(f"/users/{user_id}")
