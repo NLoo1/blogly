@@ -3,7 +3,7 @@ from flask import Flask
 from user_routes import user_bp
 from post_routes import post_bp
 from app import app, connect_db
-from models import db, User
+from models import Post, db, User
 from flask_sqlalchemy import SQLAlchemy 
 import os
 
@@ -98,4 +98,74 @@ class UserViewsTestCase(TestCase):
                 response = client.post("/users/1/delete", follow_redirects=True)
                 html = response.get_data(as_text=True)
                 self.assertEqual(response.status_code, 200)
+
+class PostViewsTestCase(TestCase):
+    def setUp(self):
+        with app.app_context():
+            db.create_all()
+            User.query.delete()
+            user = User(first_name="John", last_name="Doe")
+            db.session.add(user)
+            db.session.commit()
+            Post.query.delete()
+            post = Post(title="Test", content="Test Content")
+            db.session.add(post)
+            db.session.commit()
+            self.id= post.id
+
+    def tearDown(self):
+        with app.app_context():
+            db.drop_all()   
+            db.session.rollback()
+            db.session.commit()
+
+    def test_add_post(self):
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.post("/users/1/posts/new", data={
+                    "title": "Test",
+                    "content": "test",
+                }, follow_redirects=True)
+                html = response.get_data(as_text=True)
+
+                self.assertEqual(response.status_code, 200)
+    
+    def test_edit_post(self):
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.post("/posts/1/edit", data={
+                    "newTitle": "apples",
+                    "newContent": "oranges",
+                }, follow_redirects=True)
+                html = response.get_data(as_text=True)
+
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('apples', html)
+                self.assertIn('oranges', html)
+
+    def test_delete_post(self):
+         with app.app_context():
+            with app.test_client() as client:
+                response = client.post("/posts/1/delete", follow_redirects = True)
+                html = response.get_data(as_text=True)
+
+                self.assertEqual(response.status_code, 200)
+
+    def test_get_post(self):
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.get("/posts/1", follow_redirects=True)
+                html = response.get_data(as_text=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('Test', html)
+                self.assertIn('Test Content', html)
+    
+    def test_edit_form_for_post(self):
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.get("/posts/1/edit", follow_redirects=True)
+                html = response.get_data(as_text=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('Title', html)
+                self.assertIn('Content', html)
 

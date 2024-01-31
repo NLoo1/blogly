@@ -1,7 +1,11 @@
+import sys 
+sys.path.append('C:\\Users\\N\\Desktop\\bootcamp\\blogly')
+
+
 import os
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
-from models import connect_db
+from models import connect_db, db
 from user_routes import user_bp
 from post_routes import post_bp
 
@@ -25,5 +29,5 @@ connect_db(app)
 app.register_blueprint(user_bp)
 app.register_blueprint(post_bp)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)

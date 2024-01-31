@@ -30,9 +30,7 @@ class Post(db.Model):
     title = db.Column(db.String(50), nullable=False)
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now())
-    created_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'))
-
-    # user = db.relationship('User', backref='posts', cascade='all')
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), default=1)
 
     @classmethod
     def __repr__(self):

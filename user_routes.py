@@ -55,6 +55,8 @@ def show_post_form(user_id):
     return render_template('new-post.html',user=user)
 
 
+# POSTS ----------------
+
 @user_bp.route('/posts/<post_id>')
 def get_post(post_id):
     post = Post.query.get(post_id)

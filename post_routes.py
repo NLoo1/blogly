@@ -34,6 +34,22 @@ def delete_user(user_id):
     flash('User deleted.')
     return redirect('/')
 
+
+
+@post_bp.route ('/users/new', methods=['POST'])
+def create_user():
+    new_first = request.form['first_name']
+    new_last = request.form['last_name']
+    new_image = request.form['image_url']
+
+    new_user = User(first_name=new_first,last_name=new_last,image_url=new_image)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return redirect("/")
+
+# POSTS ------------------
+
 @post_bp.route('/users/<user_id>/posts/new', methods=['POST'])
 def add_post(user_id):
     title = request.form['title']
@@ -42,8 +58,7 @@ def add_post(user_id):
     new_post = Post(title=title,content=content,created_at=time,created_by=user_id)
     db.session.add(new_post)
     db.session.commit()
-    return redirect(f"/users/{user_id}")
-
+    return redirect(f"/users/{user_id}")    
 
 @post_bp.route('/posts/<post_id>/edit', methods=['POST'])
 def edit_post(post_id):
@@ -72,14 +87,3 @@ def delete_post(post_id):
     return redirect('/')
 
 
-@post_bp.route ('/users/new', methods=['POST'])
-def create_user():
-    new_first = request.form['first_name']
-    new_last = request.form['last_name']
-    new_image = request.form['image_url']
-
-    new_user = User(first_name=new_first,last_name=new_last,image_url=new_image)
-    db.session.add(new_user)
-    db.session.commit()
-
-    return redirect("/")
