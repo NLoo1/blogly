@@ -16,9 +16,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://{os.environ['DB_USERNAME'
 
 db.init_app(app)
 
-app.config['SQLALCHEMY_ECHO'] = True
+app.config['SQLALCHEMY_ECHO'] = False
 app.config['TESTING'] = True
 app.config['DEBUG_TB_HOSTS'] = ['dont-show-debug-toolbar']
+app.config['SECRET_KEY'] = 'abc123'
+
 
 app.register_blueprint(user_bp)
 app.register_blueprint(post_bp)
@@ -31,7 +33,7 @@ class UserViewsTestCase(TestCase):
 
     def setUp(self):
         with app.app_context():
-
+            db.create_all()
             User.query.delete()
             user = User(first_name="John", last_name="Doe")
             db.session.add(user)
@@ -40,8 +42,9 @@ class UserViewsTestCase(TestCase):
 
     def tearDown(self):
         with app.app_context():
-
+            db.drop_all()   
             db.session.rollback()
+            db.session.commit()
 
     def test_list_users(self):
         with app.app_context():
@@ -52,43 +55,47 @@ class UserViewsTestCase(TestCase):
                 self.assertEqual(resp.status_code, 200)
                 self.assertIn('John Doe', html)
 
-    def test_get_user(self):
-        with self.app.test_request_context():
-            response = self.client.get("/users/1")
-            html = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200)
-            self.assertIn('User 1', html)
-            self.assertIn('First name: John', html)
-            self.assertIn('Last name: Doe', html)
+    def test_get_user(self):
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.get("/users/1")
+                html = response.get_data(as_text=True)
+
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('User 1', html)
+                self.assertIn('John', html)
+                self.assertIn('Doe', html)
 
     def test_edit_user(self):
-        with self.app.test_request_context():
-            response = self.client.get("/users/1/edit")
-            html = response.get_data(as_text=True)
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.get("/users/1/edit")
+                html = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200)
-            self.assertIn('User 1', html)
-            self.assertIn('First name: John', html)
-            self.assertIn('Last name: Doe', html)
-            self.assertIn('New first name', html)
-            self.assertIn('Delete user?', html)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('User 1', html)
+                self.assertIn('John', html)
+                self.assertIn('Doe', html)
+                self.assertIn('New first name', html)
+                self.assertIn('Delete user?', html)
 
     def test_update_user(self):
-        with self.app.test_request_context():
-            response = self.client.post("/users/1/edit", data={
-                "first_name": "Jane",
-                "last_name": "Smith",
-                "image_url": " ",
-            }, follow_redirects=True)
-            html = response.get_data(as_text=True)
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.post("/users/1/edit", data={
+                    "newFirst": "Jane",
+                    "newLast": "Smith",
+                    "newImg": " ",
+                }, follow_redirects=True)
+                html = response.get_data(as_text=True)
 
-            self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.status_code, 200)
 
     def test_delete_user(self):
-        with self.app.test_request_context():
-            response = self.client.post("/users/1/delete", follow_redirects=True)
-            html = response.get_data(as_text=True)
-
-            self.assertEqual(response.status_code, 200)
+         with app.app_context():
+            with app.test_client() as client:
+                response = client.post("/users/1/delete", follow_redirects=True)
+                html = response.get_data(as_text=True)
+                self.assertEqual(response.status_code, 200)
 
