@@ -27,8 +27,3 @@ with app.app_context():
 
     db.session.add_all([post1, post2, post3, post4, post5, post6])
     db.session.commit()
-
-    # Post.query.delete()
-    # User.query.delete()
-
-    # db.session.commit()
