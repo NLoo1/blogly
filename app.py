@@ -29,5 +29,5 @@ connect_db(app)
 app.register_blueprint(user_bp)
 app.register_blueprint(post_bp)
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)

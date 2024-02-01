@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit tag{% endblock %}
+
+{% block content %}
+    <div class="container bg-light pb-3">
+        <h1>Tag {{tag.name}}</h1>
+        <hr>
+        <form action="/tags/{{tag.id}}/edit" method="post">
+            <label for="inputTag" class="d-block">New tag name
+                <input type="text" name="newTag" id="inputTag" required>
+            <input type="submit" value="Submit" class="btn btn-primary mb-3">
+        </form>
+        <button type="button" class="btn btn-primary mb-3" id="btnBack">Back</button>
+    </div>
+
+    <script>
+        btnBack = document.querySelector("#btnBack")
+        function back(){
+            window.location.href = "/"
+        }
+
+        btnBack.addEventListener('click', back)
+    </script>
+{% endblock %}

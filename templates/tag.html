@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Tag{% endblock %}
+
+{% block content %}
+    <h1>{{tag.name}}</h1>
+
+    <button type="button" class="btn btn-primary mb-3" id="btnBack">Back</button>    
+    <button type="button" class="btn btn-primary mb-3" id="btnEdit">Edit</button>    
+    </div>
+    <script>
+        btnBack = document.querySelector("#btnBack")
+        function back(){
+            window.location.href = "/"
+        }
+
+        btnBack.addEventListener('click', back)
+
+        btnEdit = document.querySelector("#btnEdit")
+        function edit(){
+            window.location.href = "/tags/{{tag.id}}/edit"
+        }
+
+        btnEdit.addEventListener('click', edit)
+    </script>
+{% endblock %}

@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, redirect, render_template, request
-from models import User, Post, db
+from models import PostTag, Tag, User, Post, db
 
 
 user_bp = Blueprint('user_bp', __name__)
@@ -20,7 +20,7 @@ def get_new_user_form():
 @user_bp.route ('/users/<user_id>')
 def get_user(user_id):
     user = User.query.get_or_404(user_id)
-    posts = Post.query.filter_by(created_by=user_id).all()
+    posts = Post.query.filter_by(user_id=user_id).all()
     return render_template("user.html", user=user, posts=posts)
 
 @user_bp.route ('/users/<user_id>/edit')
@@ -52,7 +52,8 @@ def update_user(user_id):
 @user_bp.route('/users/<user_id>/posts/new')
 def show_post_form(user_id):
     user = User.query.get(user_id)
-    return render_template('new-post.html',user=user)
+    tags = Tag.query.all()
+    return render_template('new-post.html',user=user, tags=tags)
 
 
 # POSTS ----------------
@@ -60,10 +61,34 @@ def show_post_form(user_id):
 @user_bp.route('/posts/<post_id>')
 def get_post(post_id):
     post = Post.query.get(post_id)
-    author = db.session.query(User).filter(User.id == post.created_by).all()
-    return render_template('post.html', post=post, author=author)
+    author = db.session.query(User).filter(User.id == post.user_id).all()
+    # tags = db.session.query(PostTag).filter(PostTag.post_id == post.id).all()
+    tags = PostTag.query.get(post_id)
+    return render_template('post.html', post=post, author=author, tags=tags)
 
 @user_bp.route('/posts/<post_id>/edit')
 def edit_form_for_post(post_id):
     post = Post.query.get(post_id)
-    return render_template('edit-post.html', post=post)
+    tags = db.session.query(Tag).filter(PostTag.post_id == Tag.id).all()
+    return render_template('edit-post.html', post=post, tags=tags)
+
+# TAGS ---------------
+
+@user_bp.route('/tags')
+def get_tags():
+    tags = Tag.query.all()
+    return render_template('tags.html', tags=tags)
+
+@user_bp.route('/tags/<tag_id>')
+def get_tag(tag_id):
+    tag = Tag.query.get_or_404(tag_id)
+    return render_template('tag.html', tag=tag)
+
+@user_bp.route('/tags/new')
+def new_tag_form():
+    return render_template('new-tag.html')
+
+@user_bp.route('/tags/<tag_id>/edit')
+def edit_tag_form(tag_id):
+    tag = Tag.query.get_or_404(tag_id)
+    return render_template('edit-tag.html', tag=tag)

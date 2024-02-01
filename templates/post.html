@@ -10,7 +10,11 @@
         <p>{{post.content}}</p>
         <p>by <a href="/users/{{author[0].id}}">{{author[0].first_name}}</a></p>
 
-
+        <p>Tags: 
+            {% for tag in tags %}
+                <span> {{tag.name}} </span>
+            {% endfor %}
+        </p>
         <button type="button" class="btn btn-link" id="btnEditPost">Edit</button>
         <button type="button" class="btn btn-link" id="btnBack">Back</button>
     </div>

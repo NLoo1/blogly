@@ -17,6 +17,13 @@
             <button type="button" class="btn btn-primary mb-3" id="btnCancel">Cancel</button>
         </form>
 
+        <h2>Tags</h2>
+        <ul style="list-style-type: none">
+            {% for tag in tags %}
+                <li><input type="checkbox" name="tag" id="checkTag"> {{tag.name}}</li>
+            {% endfor %}
+        </ul>
+
         <form action="/posts/{{post.id}}/delete" method="post">
             <input type="submit" value="Delete" class="btn btn-danger mb-3">
         </form>
