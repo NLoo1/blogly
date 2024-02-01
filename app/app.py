@@ -1,6 +1,5 @@
-import sys 
-sys.path.append('C:\\Users\\N\\Desktop\\bootcamp\\blogly')
-
+# import sys 
+# sys.path.append('C:\\Users\\NLoo1\\Desktop\\repos\\blogly')
 
 import os
 from flask import Flask
@@ -12,7 +11,7 @@ from post_routes import post_bp
 app = Flask(__name__)
 
 # TODO: Replace these hard-coded variables for security
-os.environ['DB_USERNAME'] = 'N'
+os.environ['DB_USERNAME'] = 'NLoo1'
 os.environ['DB_PASSWORD'] = ' '
 os.environ['DB_NAME'] = 'users'
 
