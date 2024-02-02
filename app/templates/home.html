@@ -14,6 +14,7 @@
         <div class="container">
             <button class="btn btn-primary" id="btnAddUser">Add new user</button>
             <button class="btn btn-primary" id="btnAddTag">Add new tag</button>
+            <button class="btn btn-primary" id="btnShowTags">Show tags</button>
         </div>
     </div>
 
@@ -33,6 +34,14 @@
         }
 
         btnAddTag.addEventListener('click', addNewTag)
+
+        btnShowTags = document.querySelector('#btnShowTags')
+
+        function showTags(){
+            window.location.href = '/tags'
+        }
+
+        btnShowTags.addEventListener('click', showTags)
 
     </script>
     {% block new %} {% endblock %}

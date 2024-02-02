@@ -36,7 +36,7 @@
     <script>
         btnBack = document.querySelector("#btnBack")
         function back(){
-            window.location.href = "/"
+            window.location.href = "/users/{{user.id}}"
         }
 
         btnBack.addEventListener('click', back)

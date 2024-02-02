@@ -3,15 +3,17 @@
 {% block title %}Tag{% endblock %}
 
 {% block content %}
-    <h1>{{tag.name}}</h1>
+    <div class="container bg-light">
 
+    
+    <h1>{{tag.name}}</h1>
     <button type="button" class="btn btn-primary mb-3" id="btnBack">Back</button>    
     <button type="button" class="btn btn-primary mb-3" id="btnEdit">Edit</button>    
     </div>
     <script>
         btnBack = document.querySelector("#btnBack")
         function back(){
-            window.location.href = "/"
+            window.location.href = "/tags"
         }
 
         btnBack.addEventListener('click', back)

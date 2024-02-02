@@ -13,16 +13,19 @@
             <label for="inputContent" class="d-block">Content
                 <input type="text" name="newContent" id="inputContent" required value="{{post.content}}"> 
             </label>
+            <h2>Tags</h2>
+            {% for tag in tags %}
+                {% if tag in checked_tags %}
+                    <input type="checkbox" name="{{tag.name}}" id="checkTag" checked> {{tag.name}} <br>
+                {% else %}
+                    <input type="checkbox" name="{{tag.name}}" id="checkTag"> {{tag.name}} <br>
+                {% endif %}
+            {% endfor %}
             <input type="submit" value="Submit" class="btn btn-primary mb-3">
             <button type="button" class="btn btn-primary mb-3" id="btnCancel">Cancel</button>
         </form>
 
-        <h2>Tags</h2>
-        <ul style="list-style-type: none">
-            {% for tag in tags %}
-                <li><input type="checkbox" name="tag" id="checkTag"> {{tag.name}}</li>
-            {% endfor %}
-        </ul>
+        
 
         <form action="/posts/{{post.id}}/delete" method="post">
             <input type="submit" value="Delete" class="btn btn-danger mb-3">
@@ -33,7 +36,7 @@
         btnCancel = document.querySelector('#btnCancel')
         
         function cancel(){
-            window.location.href = "/"
+            window.location.href = "/posts/{{post.id}}"
         }
 
         btnCancel.addEventListener('click', cancel)

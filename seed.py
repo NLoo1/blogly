@@ -1,7 +1,7 @@
 """Seed file to make sample data for db."""
 
 from datetime import datetime
-from models import PostTag, Tag, db, User, Post
+from app.models import PostTag, Tag, db, User, Post
 from app import app
 
 # Create all tables

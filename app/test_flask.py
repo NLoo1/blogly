@@ -3,7 +3,7 @@ from flask import Flask
 from user_routes import user_bp
 from post_routes import post_bp
 from app import app, connect_db
-from models import Post, db, User
+from app.models import Post, db, User
 from flask_sqlalchemy import SQLAlchemy 
 import os
 

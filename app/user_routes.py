@@ -1,5 +1,6 @@
+import pdb
 from flask import Blueprint, flash, redirect, render_template, request
-from models import PostTag, Tag, User, Post, db
+from app.models import PostTag, Tag, User, Post, db
 
 
 user_bp = Blueprint('user_bp', __name__)
@@ -55,22 +56,21 @@ def show_post_form(user_id):
     tags = Tag.query.all()
     return render_template('new-post.html',user=user, tags=tags)
 
-
 # POSTS ----------------
 
 @user_bp.route('/posts/<post_id>')
 def get_post(post_id):
     post = Post.query.get(post_id)
     author = db.session.query(User).filter(User.id == post.user_id).all()
-    # tags = db.session.query(PostTag).filter(PostTag.post_id == post.id).all()
-    tags = PostTag.query.get(post_id)
+    tags = db.session.query(Tag).filter((PostTag.tag_id == Tag.id) & (PostTag.post_id == post_id)).all()
     return render_template('post.html', post=post, author=author, tags=tags)
 
 @user_bp.route('/posts/<post_id>/edit')
 def edit_form_for_post(post_id):
     post = Post.query.get(post_id)
-    tags = db.session.query(Tag).filter(PostTag.post_id == Tag.id).all()
-    return render_template('edit-post.html', post=post, tags=tags)
+    tags = Tag.query.all()
+    checked_tags = db.session.query(Tag).filter((PostTag.tag_id == Tag.id) & (PostTag.post_id == post_id)).all()
+    return render_template('edit-post.html', post=post, tags=tags, checked_tags=checked_tags)
 
 # TAGS ---------------
 

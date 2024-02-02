@@ -1,8 +1,7 @@
 from datetime import datetime
 import pdb
 from flask import Blueprint, flash, redirect, render_template, request
-from models import PostTag, Tag, User, Post, db
-
+from .models import PostTag, Tag, User, Post, db
 
 post_bp = Blueprint('post_bp', __name__)
 
@@ -35,8 +34,6 @@ def delete_user(user_id):
     flash('User deleted.')
     return redirect('/')
 
-
-
 @post_bp.route ('/users/new', methods=['POST'])
 def create_user():
     new_first = request.form['first_name']
@@ -60,21 +57,27 @@ def add_post(user_id):
     db.session.add(new_post)
     db.session.commit()
 
-    # TODO: Add tags
-    tags = request.form.getlist('tag')
-    for tag in tags:
-        print(tag)
-    pdb.set_trace()
+    tags = request.form.to_dict()
+
+    for tag_name in tags:
+        print(tag_name)
+        tag = Tag.query.filter_by(name=tag_name).first()
+
+        # If value is tag:
+        if tag:
+            found_tag = db.session.query(Tag).filter_by(name=tag.name).first()
+            post_id = db.session.query(Post).filter_by(title=new_post.title,content=new_post.content).first().id
+            new_tag = PostTag(post_id=post_id,tag_id=found_tag.id)
+            db.session.add(new_tag)
+            db.session.commit()
+        else:
+            continue
 
     return redirect(f"/users/{user_id}")    
 
 @post_bp.route('/posts/<post_id>/edit', methods=['POST'])
 def edit_post(post_id):
     existing_post = Post.query.get(post_id)
-
-    if not existing_post:
-        flash('Post does not exist')
-        return redirect('/')  # Redirect to an error page or handle appropriately
 
     title = request.form['newTitle']
     content = request.form['newContent']
@@ -83,12 +86,27 @@ def edit_post(post_id):
     existing_post.title = title
     existing_post.content = content
 
-    # TODO: Add tags
-    tags = request.form.getlist('tags')
+    tags = request.form.to_dict()
 
+    for tag_name in tags:
+        print(tag_name)
+        tag = Tag.query.filter_by(name=tag_name).first()
 
-    db.session.commit()
+        # If value is tag:
+        if tag:
+            # Delete tags from post
+            found_tag = db.session.query(Tag).filter_by(name=tag.name).first()
+            db.session.query(PostTag).filter_by(post_id=post_id).delete()
+            db.session.commit()
 
+            # Then re-add
+            new_tag = PostTag(post_id=post_id,tag_id=found_tag.id)
+            db.session.add(new_tag)
+            db.session.commit()
+            
+        else:
+            continue
+        
     return redirect(f'/posts/{post_id}')
 
 @post_bp.route('/posts/<post_id>/delete', methods=['POST'])
@@ -106,6 +124,7 @@ def delete_post(post_id):
 @post_bp.route('/tags/new', methods=['POST'])
 def new_tag():
     tag = request.form['newTag']
+    tag = Tag(name=tag)
     db.session.add(tag)
     db.session.commit()
     return redirect('/tags')

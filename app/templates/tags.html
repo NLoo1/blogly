@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}All tags{% endblock %}
+
+{% block content %}
+    <div class="container bg-light pb-3">
+        <h1>All tags</h1>
+        <hr>
+        <ul>
+            {% for tag in tags %}
+                <li><a href="/tags/{{tag.id}}">{{tag.name}}</a></li>
+            {% endfor %}
+        </ul>
+        <button type="button" class="btn btn-primary" id="btnBack">Back</button>
+        <button class="btn btn-primary" id="btnAddTag">Add new tag</button>
+    </div>
+    <script>
+        btnBack = document.querySelector("#btnBack")
+        function back(){
+            window.location.href = "/"
+        }
+
+        btnBack.addEventListener('click', back)
+
+        btnAddTag = document.querySelector("#btnAddTag")
+        function addTag(){
+            window.location.href = "/tags/new"
+        }
+
+        btnAddTag.addEventListener('click', addTag)
+    </script>
+{% endblock %}
