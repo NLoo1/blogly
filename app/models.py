@@ -34,12 +34,10 @@ class Post(db.Model):
     # "Through" relationship to posts_tags
     tags = db.relationship('Tag', secondary="posts_tags", backref="posts")
 
-
     @classmethod
     def __repr__(self):
         return f"<Post id:{self.id} {self.title} {self.content} {self.created_at}>"
     
-
 class Tag(db.Model):
     __tablename__ = 'tags'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

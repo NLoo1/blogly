@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from app.models import PostTag, Tag, db, User, Post
-from app import app
+from app.app import app
 
 # Create all tables
 with app.app_context():
