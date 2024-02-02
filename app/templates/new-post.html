@@ -25,4 +25,14 @@
         </form>
     </div>
 
+    
+    <script>
+        btnCancel = document.querySelector('#btnCancel')
+        
+        function cancel(){
+            window.location.href = "/users/{{user.id}}"
+        }
+
+        btnCancel.addEventListener('click', cancel)
+    </script>
 {% endblock %}

@@ -7,6 +7,11 @@
 
     
     <h1>{{tag.name}}</h1>
+    <ul>
+        {% for post in posts %}
+        <li><a href="/posts/{{post.post_id}}">{{post.post_id}}</a></li>
+        {% endfor %}
+    </ul>
     <button type="button" class="btn btn-primary mb-3" id="btnBack">Back</button>    
     <button type="button" class="btn btn-primary mb-3" id="btnEdit">Edit</button>    
     </div>

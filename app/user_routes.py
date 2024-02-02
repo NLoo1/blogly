@@ -82,7 +82,9 @@ def get_tags():
 @user_bp.route('/tags/<tag_id>')
 def get_tag(tag_id):
     tag = Tag.query.get_or_404(tag_id)
-    return render_template('tag.html', tag=tag)
+    # Get post IDs
+    get_posts = db.session.query(PostTag).filter(PostTag.tag_id == tag_id).all()
+    return render_template('tag.html', tag=tag, posts=get_posts)
 
 @user_bp.route('/tags/new')
 def new_tag_form():

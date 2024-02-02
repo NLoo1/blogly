@@ -1,9 +1,9 @@
 from unittest import TestCase
 from flask import Flask
-from user_routes import user_bp
-from post_routes import post_bp
-from app import app, connect_db
-from app.models import Post, db, User
+from app.user_routes import user_bp
+from app.post_routes import post_bp
+from app.app import app
+from app.models import Post, PostTag, db, User
 from flask_sqlalchemy import SQLAlchemy 
 import os
 
@@ -168,4 +168,89 @@ class PostViewsTestCase(TestCase):
                 self.assertEqual(response.status_code, 200)
                 self.assertIn('Title', html)
                 self.assertIn('Content', html)
+    
+def TagViewsTestCase(TestCase):
+    def setUp(self):
+        with app.app_context():
+            db.create_all()
+            User.query.delete()
+            user = User(first_name="John", last_name="Doe")
+            db.session.add(user)
+            db.session.commit()
+            Post.query.delete()
+            post = Post(title="Test", content="Test Content")
+            db.session.add(post)
+            db.session.commit()
+            
 
+    def tearDown(self):
+        with app.app_context():
+            db.drop_all()   
+            db.session.rollback()
+            db.session.commit()
+
+    def test_edit_tag(self):
+        with app.app_context():
+            with app.test_client() as client:
+
+                response = client.post("/tags/1/edit",data={"newTag": "Banana"}, follow_redirects=True)
+                html = response.get_data(as_text=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('Banana', html)
+
+    def test_add_tag(self):
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.post("/tags/new", data={"newTag": "Banana"},follow_redirects=True)
+                html = response.get_data(as_text=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('Banana', html)
+                self.assertIn('Tags', html)
+
+    def test_get_tag(self):
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.get("/tags/1/", follow_redirects=True)
+                html = response.get_data(as_text=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('Test', html)
+
+
+    def test_delete_tag(self):
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.post("/tags/1/delete", follow_redirects=True)
+                html = response.get_data(as_text=True)
+                self.assertEqual(response.status_code, 200)
+
+def PostViewsTestCase(TestCase):
+    def setUp(self):
+        with app.app_context():
+            db.create_all()
+            User.query.delete()
+            user = User(first_name="John", last_name="Doe")
+            db.session.add(user)
+            db.session.commit()
+            Post.query.delete()
+            post = Post(title="Test", content="Test Content")
+            db.session.add(post)
+            db.session.commit()
+            post_tag = PostTag(1,1)
+            db.session.add(post_tag)
+            db.session.commit()
+            
+
+    def tearDown(self):
+        with app.app_context():
+            db.drop_all()   
+            db.session.rollback()
+            db.session.commit()
+
+    def test_find_posts(self):
+        with app.app_context():
+            with app.test_client() as client:
+                response = client.get("/tags/1", follow_redirects=True)
+                html = response.get_data(as_text=True)
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('1', html)
+    
