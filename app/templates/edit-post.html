@@ -6,7 +6,7 @@
     <div class="container bg-light">
         <h1>Edit post</h1>
         <hr>
-        <form action="/posts/{{post.id}}/edit" method="post" >
+        <form action="/posts/{{post.id}}/edit" method="POST" >
             <label for="inputTitle" class="d-block">Title
                 <input type="text" name="newTitle" id="inputTitle" required value="{{post.title}}">
             </label>

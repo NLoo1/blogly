@@ -60,20 +60,18 @@ def add_post(user_id):
     tags = request.form.to_dict()
 
     for tag_name in tags:
-        print(tag_name)
         tag = Tag.query.filter_by(name=tag_name).first()
 
         # If value is tag:
         if tag:
-            found_tag = db.session.query(Tag).filter_by(name=tag.name).first()
             post_id = db.session.query(Post).filter_by(title=new_post.title,content=new_post.content).first().id
-            new_tag = PostTag(post_id=post_id,tag_id=found_tag.id)
+            new_tag = PostTag(post_id=post_id,tag_id=tag.id)
             db.session.add(new_tag)
             db.session.commit()
         else:
             continue
 
-    return redirect(f"/users/{user_id}")    
+    return redirect("/")    
 
 @post_bp.route('/posts/<post_id>/edit', methods=['POST'])
 def edit_post(post_id):
@@ -82,31 +80,31 @@ def edit_post(post_id):
     title = request.form['newTitle']
     content = request.form['newContent']
 
+
     # Update the existing user's properties
     existing_post.title = title
     existing_post.content = content
 
+    db.session.add(existing_post)
+    db.session.commit()
+
+    # Clear all tags
+    db.session.query(PostTag).filter_by(post_id=post_id).delete()
+    db.session.commit()
+
     tags = request.form.to_dict()
 
+    
+    # Go through tags
     for tag_name in tags:
-        print(tag_name)
-        tag = Tag.query.filter_by(name=tag_name).first()
-
-        # If value is tag:
-        if tag:
-            # Delete tags from post
-            found_tag = db.session.query(Tag).filter_by(name=tag.name).first()
-            db.session.query(PostTag).filter_by(post_id=post_id).delete()
+        try:
+            tag = db.session.query(Tag).filter_by(name=tag_name).first()
+            new_posttag = PostTag(post_id=post_id,tag_id=tag.id)
+            db.session.add(new_posttag)
             db.session.commit()
-
-            # Then re-add
-            new_tag = PostTag(post_id=post_id,tag_id=found_tag.id)
-            db.session.add(new_tag)
-            db.session.commit()
-            
-        else:
+        except(Exception):
             continue
-        
+
     return redirect(f'/posts/{post_id}')
 
 @post_bp.route('/posts/<post_id>/delete', methods=['POST'])
