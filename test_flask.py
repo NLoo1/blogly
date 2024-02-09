@@ -7,7 +7,7 @@ from app.models import Post, PostTag, db, User
 from flask_sqlalchemy import SQLAlchemy 
 import os
 
-app = Flask(__name__)
+app = Flask(__name__,template_folder='app/templates')
 
 os.environ['DB_USERNAME'] = 'N'
 os.environ['DB_PASSWORD'] = ' '
