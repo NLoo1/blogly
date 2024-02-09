@@ -1,6 +1,6 @@
 import pdb
 from flask import Blueprint, flash, redirect, render_template, request
-from app.models import PostTag, Tag, User, Post, db
+from .models import PostTag, Tag, User, Post, db
 
 
 user_bp = Blueprint('user_bp', __name__)
