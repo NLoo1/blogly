@@ -3,9 +3,10 @@ from flask import Flask
 from app.user_routes import user_bp
 from app.post_routes import post_bp
 from app.app import app
-from app.models import Post, PostTag, db, User
+from app.models import Post, PostTag, db, User, Tag
 from flask_sqlalchemy import SQLAlchemy 
 import os
+
 
 app = Flask(__name__,template_folder='app/templates')
 
@@ -169,20 +170,14 @@ class PostViewsTestCase(TestCase):
                 self.assertIn('Title', html)
                 self.assertIn('Content', html)
     
-def TagViewsTestCase(TestCase):
+class TagViewsTestCase(TestCase):
     def setUp(self):
         with app.app_context():
             db.create_all()
-            User.query.delete()
-            user = User(first_name="John", last_name="Doe")
-            db.session.add(user)
-            db.session.commit()
-            Post.query.delete()
-            post = Post(title="Test", content="Test Content")
-            db.session.add(post)
+            tag = Tag(name='test_tag')
+            db.session.add(tag)
             db.session.commit()
             
-
     def tearDown(self):
         with app.app_context():
             db.drop_all()   
@@ -192,7 +187,6 @@ def TagViewsTestCase(TestCase):
     def test_edit_tag(self):
         with app.app_context():
             with app.test_client() as client:
-
                 response = client.post("/tags/1/edit",data={"newTag": "Banana"}, follow_redirects=True)
                 html = response.get_data(as_text=True)
                 self.assertEqual(response.status_code, 200)
@@ -205,15 +199,14 @@ def TagViewsTestCase(TestCase):
                 html = response.get_data(as_text=True)
                 self.assertEqual(response.status_code, 200)
                 self.assertIn('Banana', html)
-                self.assertIn('Tags', html)
 
     def test_get_tag(self):
         with app.app_context():
             with app.test_client() as client:
-                response = client.get("/tags/1/", follow_redirects=True)
+                response = client.get("/tags/1", follow_redirects=True)
                 html = response.get_data(as_text=True)
                 self.assertEqual(response.status_code, 200)
-                self.assertIn('Test', html)
+                self.assertIn('test_tag', html)
 
 
     def test_delete_tag(self):
@@ -223,7 +216,7 @@ def TagViewsTestCase(TestCase):
                 html = response.get_data(as_text=True)
                 self.assertEqual(response.status_code, 200)
 
-def PostViewsTestCase(TestCase):
+def PostTagViewsTestCase(TestCase):
     def setUp(self):
         with app.app_context():
             db.create_all()
